@@ -1,0 +1,12 @@
+name: WhaterAPI
+version: '${project.version}'
+main: com.bonkle.whatever.WhMain
+api-version: 1.18
+authors: [ Cloud, Cak ]
+load: STARTUP
+description: Minecraft Plugin for the Machinery Plugin Jam.
+commands:
+  customitemmenu:
+    description: Shows a menu of all custom items with WhateverAPI.
+    usage: /customitemmenu
+    aliases: [ cim ]
