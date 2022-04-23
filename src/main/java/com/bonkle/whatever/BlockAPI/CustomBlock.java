@@ -38,13 +38,13 @@ public class CustomBlock {
     @ApiInternal
     public static void setCustomBlocksMetadata() {
         //Because metadata gets wiped on reload, look for armourstands and set metadata of the block above (because thats how they are positioned)
-        for (World world : WhMain.plugin.getServer().getWorlds()) {
+        for (World world : WhMain.getPlugin().getServer().getWorlds()) {
             for (ArmorStand as : world.getEntitiesByClass(ArmorStand.class)) {
                 if (as.hasMetadata("customBlock")) {
                     Location asLoc = as.getLocation();
                     Location blockLoc = asLoc.clone().add(0,1,0);
                     if (blockLoc.getBlock().getType() == Material.BARRIER) {
-                        blockLoc.getBlock().setMetadata("customBlock", new FixedMetadataValue(WhMain.plugin, as.getCustomName()));
+                        blockLoc.getBlock().setMetadata("customBlock", new FixedMetadataValue(WhMain.getPlugin(), as.getCustomName()));
                     }
                 }
             }
@@ -167,7 +167,7 @@ public class CustomBlock {
                 if (solid) {
                     as.setInvulnerable(true);
                     world.getBlockAt(newBlockLoc).setType(Material.BARRIER);
-                    world.getBlockAt(newBlockLoc).setMetadata("customBlock", new FixedMetadataValue(WhMain.plugin, getFullId()));
+                    world.getBlockAt(newBlockLoc).setMetadata("customBlock", new FixedMetadataValue(WhMain.getPlugin(), getFullId()));
                 }
 
             }
@@ -181,7 +181,7 @@ public class CustomBlock {
         if (drops && !forceDisableDrops) {
             event.getPlayer().getWorld().dropItemNaturally(event.getBlock().getLocation(), generateItemStack());
         }
-        event.getBlock().removeMetadata("customBlock", WhMain.plugin);
+        event.getBlock().removeMetadata("customBlock", WhMain.getPlugin());
 
         //Kill armor stand
         if (as == null) {

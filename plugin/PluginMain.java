@@ -73,7 +73,7 @@ public class PluginMain {
                                         ), 1, dustOptions);
                             }
                         }
-                    }.runTaskTimer(WhMain.plugin, 0, 1);
+                    }.runTaskTimer(WhMain.getPlugin(), 0, 1);
 
                 });
 
@@ -129,7 +129,7 @@ public class PluginMain {
                     event.getItem().setItemMeta(meta);
                 });
 
-        Register.eventHandler(WhMain.plugin, new PluginEvents());
+        Register.eventHandler(WhMain.getPlugin(), new PluginEvents());
 
         //Stuff im going to add because copilot started using stuff which didnt
         //create some custom categories
