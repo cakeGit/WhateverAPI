@@ -1,8 +1,8 @@
 name: WhaterAPI
-version: '${project.version}'
+version: A.2
 main: com.bonkle.whatever.WhMain
 api-version: 1.18
-authors: [ Cloud, Cak ]
+authors: [ Cak ]
 load: STARTUP
 description: Minecraft Plugin for the Machinery Plugin Jam.
 commands:
