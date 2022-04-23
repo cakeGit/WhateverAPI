@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 class Commands {//Internal Commands class - private to this plugin
 
-    protected static CommandHandler handler = new CommandHandler(WhMain.getPlugin());
+    protected static CommandHandler handler = new CommandHandler(WhMain.plugin);
 
     protected static void init() {
         handler
@@ -46,7 +46,7 @@ class Commands {//Internal Commands class - private to this plugin
                     public void run() {
                         ((Player) sender).setItemOnCursor(event.getCurrentItem());
                     }
-                }.runTaskLater(WhMain.getPlugin(), 1);
+                }.runTaskLater(WhMain.plugin, 1);
             }
         };
 
