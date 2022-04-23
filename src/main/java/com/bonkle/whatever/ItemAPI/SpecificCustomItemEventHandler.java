@@ -1,18 +1,21 @@
 package com.bonkle.whatever.ItemAPI;
 
 import com.bonkle.whatever.Annotations.ApiInternal;
+import com.bonkle.whatever.Debug;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Objects;
 
 /**<h1 color="red">INTERNAL - DO NOT USE</h1>*/
 @ApiInternal
+@Deprecated //TODO: MOVE INTO CUSTOM ITEM EVENTS
 public class SpecificCustomItemEventHandler implements Listener {
 
     private final CustomItem customItem;
@@ -64,6 +67,21 @@ public class SpecificCustomItemEventHandler implements Listener {
                                 null, null
                                 ));
             }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerItemConsumeEvent(PlayerItemConsumeEvent event) {
+        if (ItemStackMatchesCustom(event.getItem())) {
+            Debug.log("Consuming " + customItem.getFormattedFullId());
+
+            event.setReplacement(customItem.getEatResult());
+            Debug.log("Setting to " + customItem.getEatResult());
+           /* new BukkitRunnable() {
+                @Override
+                public void run() {
+                }
+            }.runTaskLater(WhMain.plugin, 1);*/
         }
     }
 

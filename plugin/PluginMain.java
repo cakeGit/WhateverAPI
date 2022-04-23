@@ -95,12 +95,14 @@ public class PluginMain {
         new CustomBlock("Barrier", ns, Material.BARRIER)
                 .loadBlockOptions(genericPropOptions);
 
-        new CustomBlock("Coek Can", ns, Material.BLAZE_POWDER)
+        new CustomBlock("Coek Can", ns, Material.MILK_BUCKET)
                 .loadBlockOptions(genericPropOptions)
                 .setRightClickPickUp(true)
-                .setRotationIncrement(30);
+                .setRotationIncrement(30)
+                .getLinkedItem()
+                .setEatConsume(false);
 
-        new CustomBlock("Pepis Can", ns, Material.BLAZE_POWDER)
+        new CustomBlock("Pepis Can", ns, Material.MILK_BUCKET)
                 .loadBlockOptions(genericPropOptions)
                 .setRightClickPickUp(true)
                 .setRotationIncrement(30);
@@ -108,7 +110,7 @@ public class PluginMain {
         new CustomBlock("Studio Seat", ns, Material.BLAZE_POWDER)
                 .loadBlockOptions(genericPropOptions);
 
-        new CustomBlock("Popcorn", ns, Material.BLAZE_POWDER)
+        new CustomBlock("Popcorn", ns, Material.BREAD)
                 .loadBlockOptions(genericPropOptions)
                 .setRightClickPickUp(true)
                 .setRotationIncrement(30);

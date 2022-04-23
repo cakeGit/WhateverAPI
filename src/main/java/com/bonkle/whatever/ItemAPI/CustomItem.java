@@ -8,13 +8,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
 public class CustomItem {
 
-    private static ArrayList<CustomItem> customItems = new ArrayList<>();
+    private static final ArrayList<CustomItem> customItems = new ArrayList<>();
 
     /** <h2>Gets a list of all the custom items registered</h2>
      * @return ArrayList of CustomItems
@@ -59,12 +60,14 @@ public class CustomItem {
     private final Material material;
     private String[] categories = new String[0];
     private String[] defaultLore = new String[0];
+    private ItemMeta meta;
 
     //Custom item functions
     private boolean edible = false;
     private float nutrition = 2.0F;
     private boolean weapon = false;
     private float damage = 2.0F;
+    private WhItemStack eatResult = null;
 
     //Custom item Event Handlers
     private OnCustomItemUse onUse;
@@ -107,6 +110,7 @@ public class CustomItem {
         System.arraycopy(defaultLore, 0, fullLore, 1, fullLore.length - 1);
 
         return new WhItemStack(material)
+                .setItemMetaRI(meta)
                 .setLore(fullLore)
                 .setName(name);
 
@@ -122,6 +126,12 @@ public class CustomItem {
      */ public String getFullId() { return pluginNamespace + ":" + id; }
 
     //Getters and setters
+
+    /**<h2>Sets all generated item's meta</h2>
+     * @param meta ItemMeta to set
+     * @return CustomItem for chaining
+     */ public CustomItem setMeta(ItemMeta meta) { this.meta = meta; return this; }
+
     /**<h2>Returns the item name</h2>
      * @return Name of the item
      */ public String getName() { return name; }
@@ -140,6 +150,7 @@ public class CustomItem {
 
     /**<h2>Sets the item categories</h2>
      * @param categories Categories of the item (Single string or array)
+     * @return CustomItem for chaining
      */ public CustomItem setCategories(String... categories) { this.categories = categories; return this; }
 
     /**<h2>Returns if the item is in a specific category</h2>
@@ -168,6 +179,24 @@ public class CustomItem {
      * <b>THIS IS FOR IF IT IS SET VIA CODE AND REQUIRES ITEM TO BE EDIBLE NORMALLY</b>
      * @param edible If the item is edible
      */ public CustomItem setEdible(boolean edible) { this.edible = edible; return this; }
+
+    public CustomItem setEatResult(WhItemStack eatResult) {
+        this.eatResult = eatResult;
+        return this;
+    }
+
+    public WhItemStack getEatResult() {
+        return eatResult;
+    }
+
+    public CustomItem setEatConsume(boolean b) {
+         if (b) {
+             this.eatResult = new WhItemStack(Material.AIR);
+         } else {
+             this.eatResult = generateItemStack();
+         }
+         return this;
+    }
 
     /**<h2>Returns the item's nutrition</h2>
      * @return The item's nutrition

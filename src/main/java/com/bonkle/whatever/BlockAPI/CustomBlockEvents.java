@@ -11,6 +11,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 
 public class CustomBlockEvents implements Listener {
 
@@ -74,7 +75,7 @@ public class CustomBlockEvents implements Listener {
     }
 
     @EventHandler
-    public void onPlayerInteractEntity(PlayerInteractAtEntityEvent event) { //Handles custom block interaction
+    public void onPlayerInteractEntityEvent(PlayerInteractAtEntityEvent event) { //Handles custom block interaction
         if (event.getRightClicked() instanceof ArmorStand) {
             ArmorStand armorStand = (ArmorStand) event.getRightClicked();
 
@@ -86,5 +87,8 @@ public class CustomBlockEvents implements Listener {
         }
     }
 
+    @EventHandler
+    public void onPlayerItemConsumeEvent(PlayerItemConsumeEvent event) { //Handles custom block interaction
 
+    }
 }
