@@ -2,8 +2,6 @@ package com.bonkle.whatever.ItemAPI;
 
 import com.bonkle.whatever.Debug;
 import com.bonkle.whatever.ItemAPI.CustomItemHandlers.OnCustomItemUse;
-import com.bonkle.whatever.RegisterAPI.Register;
-import com.bonkle.whatever.WhMain;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -73,9 +71,14 @@ public class CustomItem {
     private OnCustomItemUse onAttackClick; //ToDo: Implement this
     private OnCustomItemUse onGenericLeftClick;
 
+    public CustomItem(String name, String pluginNamespace) {
+        this(name, pluginNamespace, name, Material.BLAZE_POWDER);
+    }
+
     public CustomItem(String name, String pluginNamespace, String id) {
         this(name, pluginNamespace, id, Material.BLAZE_POWDER);
     }
+
     public CustomItem(String name, String pluginNamespace, String id, Material material) {
         String parsedId = id.toLowerCase(Locale.ROOT)
                 .replace(" ", "_")
@@ -91,9 +94,6 @@ public class CustomItem {
         this.id = parsedId;
         this.pluginNamespace = pluginNamespace;
         this.material = material;
-
-        //Register a custom item event handler with this item
-        Register.eventHandler(WhMain.plugin, new SpecificCustomItemEventHandler(this));
 
         //Add to CustomItem list
         customItems.add(this);
