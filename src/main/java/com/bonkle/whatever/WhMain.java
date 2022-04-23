@@ -5,7 +5,7 @@ import com.bonkle.whatever.BlockAPI.CustomBlockEvents;
 import com.bonkle.whatever.ItemAPI.CustomItemEvents;
 import com.bonkle.whatever.MenuAPI.InventoryMenuEvents;
 import com.bonkle.whatever.RegisterAPI.Register;
-import com.bonkle.whatevertest.TestMain;
+import com.bonkle.plugin.PluginMain;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class WhMain extends JavaPlugin {
@@ -15,7 +15,7 @@ public final class WhMain extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = this;
-        Debug.enable(plugin);
+        //Debug.enable(plugin);
 
         CustomBlock.setCustomBlocksMetadata();
 
@@ -25,7 +25,7 @@ public final class WhMain extends JavaPlugin {
 
         Commands.init();
 
-        TestMain.init();
+        PluginMain.init();
 
     }
 

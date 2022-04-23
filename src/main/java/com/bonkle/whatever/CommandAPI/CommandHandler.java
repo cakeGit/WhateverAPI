@@ -58,8 +58,6 @@ public class CommandHandler implements CommandExecutor {
      *       YourCommandHandlerClass::test2Command
      *    ); //You can also set it to run another function</pre></code>
      *
-     * <br><hr><br><img src="https://i.ibb.co/724pJ0Y/JD-128x128.png" height="60"><br>
-     * <span color="gray">Whatever API - Javadocs By Cak - com.bonkle.whatever</span><br>
      * @param plugin The plugin that is registering the command
      * @see CommandHandler#registerCommandListener(String commandName, CommandFunction function)
      * @see CommandFunction#onCommand(CommandSender sender, Command command, String label, String[] args)
@@ -86,8 +84,6 @@ public class CommandHandler implements CommandExecutor {
      *       YourCommandHandlerClass::test2Command
      *    ); //You can also set it to run another function</pre></code>
      *
-     * <br><hr><br><img src="https://i.ibb.co/724pJ0Y/JD-128x128.png" height="60"><br>
-     * <span color="gray">Whatever API - Javadocs By Cak - com.bonkle.whatever</span><br>
      * @param command The command to register
      * @param function The CommandFunction to be executed when the command is ran
      */
@@ -103,8 +99,6 @@ public class CommandHandler implements CommandExecutor {
      * This function is called by Bukkit when a command is executed<br><br>
      * <b color="#FF2020">This function is not meant to be called by the plugin using this API and as such is deprecated</b><br><br>
      *
-     * <hr><br><img src="https://i.ibb.co/724pJ0Y/JD-128x128.png" height="60"><br>
-     * <span color="gray">Whatever API - Javadocs By Cak - com.bonkle.whatever</span><br>
      * @param sender The sender of the command
      * @param command The command that was executed
      * @param label The command label

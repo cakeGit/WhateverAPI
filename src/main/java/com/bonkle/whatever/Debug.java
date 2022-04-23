@@ -102,6 +102,22 @@ public class Debug {
         Bukkit.getLogger().info(message + "");
     }
 
+    public static void log(float message) {
+        if (notCalledByEnabled()) return;
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.sendMessage(getPrefix() + ChatColor.DARK_PURPLE + message);
+        }
+        Bukkit.getLogger().info(message + "");
+    }
+
+    public static void log(double message) {
+        if (notCalledByEnabled()) return;
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.sendMessage(getPrefix() + ChatColor.DARK_PURPLE + message);
+        }
+        Bukkit.getLogger().info(message + "");
+    }
+
     public static void log(boolean message) {
         if (notCalledByEnabled()) return;
         for (Player player : Bukkit.getOnlinePlayers()) {

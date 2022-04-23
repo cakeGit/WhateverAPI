@@ -1,23 +1,55 @@
 package com.bonkle.whatever.BlockAPI;
 
 import com.bonkle.whatever.Debug;
-import com.bonkle.whatever.WhMain;
+import org.bukkit.GameMode;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 public class CustomBlockEvents implements Listener {
 
     @EventHandler
-    public void onEntityDamageEvent(EntityDamageEvent event) { //Stops killing the custom block armour stand
+    public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) { //Stops killing the custom block armour stand
+
+        if (event.getEntity() instanceof ArmorStand) {
+            ArmorStand armorStand = (ArmorStand) event.getEntity();
+            //loop all custom blocks
+            for (CustomBlock cb : CustomBlock.getCustomBlocks()) {
+                if (armorStand.getCustomName().contains(cb.getFullId()) && cb.isSolid()) {
+                    event.setCancelled(true);
+                    break;
+                } else if (armorStand.getCustomName().contains(cb.getFullId()) && !cb.isSolid()) {
+                    event.setCancelled(false);
+                    Debug.log("EntityDamageByEntityEvent: " + event.getEntity().getCustomName() + " was damaged by " + ((Player) event.getDamager()).getDisplayName());
+                    if (event.getFinalDamage() >= armorStand.getHealth() || ((Player) event.getDamager()).getGameMode() == GameMode.CREATIVE) {
+                        cb.onBreak(new BlockBreakEvent(
+                                armorStand.getLocation().getBlock(),
+                                (Player) event.getDamager()
+                        ), armorStand, false);
+                        Debug.log("CustomBlockEvents Custom block killed by player");
+                    }
+                    break;
+                }
+            }
+        }
+
+    }
+
+    @EventHandler
+    public void onEntityDeathEvent(EntityDeathEvent event) { //Handles custom block armourstand death
         if (event.getEntity() instanceof ArmorStand) {
             ArmorStand armorStand = (ArmorStand) event.getEntity();
 
             for (CustomBlock cb : CustomBlock.getCustomBlocks()) {
                 if (armorStand.getCustomName().contains(cb.getFullId())) {
-                    event.setCancelled(true);
+                    event.getDrops().clear();
+                    break;
                 }
             }
         }
@@ -26,23 +58,33 @@ public class CustomBlockEvents implements Listener {
     @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent event) { //Handles custom block breaking
         if (event.getBlock().hasMetadata("customBlock")) {
-            Debug.log(event.getBlock().getMetadata("customBlock").get(0).asString());
-
-            event.getBlock().getWorld().dropItemNaturally(
-                    event.getBlock().getLocation(),
-                    CustomBlock.getCustomBlock(
-                            event.getBlock().getMetadata("customBlock").get(0).asString()
-                    ).generateItemStack()
-            );
-
-            event.getBlock().removeMetadata("customBlock", WhMain.plugin);
-            //Kill armor stand
-            event.getBlock().getWorld().getNearbyEntities(
-                    event.getBlock().getLocation().clone().add(0.5,-1 + 1.0/16.0,0.5),
-                    0.2, 0.2, 0.2
-            ).stream().filter(entity -> entity instanceof ArmorStand && entity.getLocation().equals(event.getBlock().getLocation().clone().add(0.5,-1 + 1.0/16.0,0.5)))
-                    .findFirst().orElse(null).remove();
+            CustomBlock cb = CustomBlock.getCustomBlock(event.getBlock().getMetadata("customBlock").get(0).asString());
+            cb.onBreak(event, null, false);
         }
     }
+
+    @EventHandler
+    public void onPlayerInteractEvent(PlayerInteractEvent event) { //Handles custom block interaction
+        if (event.getClickedBlock() != null) {
+            if (event.getClickedBlock().hasMetadata("customBlock")) {
+                CustomBlock cb = CustomBlock.getCustomBlock(event.getClickedBlock().getMetadata("customBlock").get(0).asString());
+                cb.onInteract(event.getPlayer(), event.getClickedBlock().getLocation(), null);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerInteractEntity(PlayerInteractAtEntityEvent event) { //Handles custom block interaction
+        if (event.getRightClicked() instanceof ArmorStand) {
+            ArmorStand armorStand = (ArmorStand) event.getRightClicked();
+
+            for (CustomBlock cb : CustomBlock.getCustomBlocks()) {
+                if (armorStand.getCustomName().contains(cb.getFullId()) && !cb.isSolid()) {
+                    cb.onInteract(event.getPlayer(), event.getRightClicked().getLocation(), armorStand);
+                }
+            }
+        }
+    }
+
 
 }

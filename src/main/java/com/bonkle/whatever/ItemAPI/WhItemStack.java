@@ -140,7 +140,7 @@ public class WhItemStack extends ItemStack {
 
 
     /**
-     * <h2>Wrapper function to set a multiple lines of lore for an item that runs <code>getItemMeta().setLore(List.of(lore))</code>.</h2>
+     * <h2>Wrapper function to set  multiple lines of lore for an item that runs <code>getItemMeta().setLore(List.of(lore))</code>.</h2>
      *
      * <b color="#ff8800;">Warning: Please note that this will overwrite any existing lore!</b><br><br>
      *
@@ -157,6 +157,27 @@ public class WhItemStack extends ItemStack {
         setItemMeta(itemMeta);
         return this;
     }
+
+    /**
+     * <h2>Wrapper function to set a specific <b>EXISTING</b> line of lore for an item that runs <code>getItemMeta().setLore(List.of(lore))</code>.</h2>
+     *
+     * <b color="#ff8800;">Warning: Please note that this will overwrite any existing lore in the line!</b><br><br>
+     *
+     * This is a convenience method for setting the lore of an item without getting and setting meta.<br><br>
+     *
+     * <span style="font-style: italic;">Returns the WhItemStack so that you can chain methods</span>
+     *
+     * @param index Index to set
+     * @param lore Lore to set
+     * @return WhItemStack with set lore
+     */
+    public WhItemStack setLore(int index, String lore) {
+        List<String> loreList = getItemMeta().getLore();
+        loreList.set(index, lore);
+        getItemMeta().setLore(loreList);
+        return this;
+    }
+
     /**
      * <h2>Wrapper function to return an WhItemStack array with length <code>times</code> filled with the WhItemStack</h2>
      *
@@ -203,6 +224,16 @@ public class WhItemStack extends ItemStack {
     public WhItemStack clone() {
         return new WhItemStack(material, getAmount())
                 .setItemMetaRI(getItemMeta());
+    }
+
+    /**
+     * <h2>Returns a copy of the WhItemStack with the same material, MetaData and amount.</h2>
+     *
+     * @return WhItemStack with the same material, MetaData and amount
+     */
+    public static WhItemStack fromBukkit(ItemStack itemStack) {
+        return new WhItemStack(itemStack.getType(), itemStack.getAmount())
+                .setItemMetaRI(itemStack.getItemMeta());
     }
 
     //RI methods

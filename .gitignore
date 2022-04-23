@@ -111,3 +111,6 @@ buildNumber.properties
 
 # Common working directory
 run/
+
+#Plugin
+#src/main/java/com/bonkle/plugin/

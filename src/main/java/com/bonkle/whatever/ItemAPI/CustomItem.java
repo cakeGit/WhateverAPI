@@ -70,6 +70,8 @@ public class CustomItem {
     private OnCustomItemUse onUse;
     private OnCustomItemUse onRightClick;
     private OnCustomItemUse onLeftClick;
+    private OnCustomItemUse onAttackClick; //ToDo: Implement this
+    private OnCustomItemUse onGenericLeftClick;
 
     public CustomItem(String name, String pluginNamespace, String id) {
         this(name, pluginNamespace, id, Material.BLAZE_POWDER);
@@ -201,10 +203,19 @@ public class CustomItem {
 
     public void onLeftClick(PlayerInteractEvent event) {
         if(onLeftClick != null) onLeftClick.run(event);
+        onGenericLeftClick(event);
     }
 
     /**<h2>Sets the item's onLeftClick handler</h2>
      * @param onLeftClick The event to run when the item is left clicked
      */ public CustomItem setOnLeftClick(OnCustomItemUse onLeftClick) { this.onLeftClick = onLeftClick; return this; }
+
+    public void onGenericLeftClick(PlayerInteractEvent event) {
+        if(onGenericLeftClick != null) onGenericLeftClick.run(event);
+    }
+
+    /**<h2>Sets the item's onLeftClick handler</h2>
+     * @param onGenericLeftClick The event to run when the item is left clicked
+     */ public CustomItem setOnGenericLeftClick(OnCustomItemUse onGenericLeftClick) { this.onGenericLeftClick = onGenericLeftClick; return this; }
 
 }
