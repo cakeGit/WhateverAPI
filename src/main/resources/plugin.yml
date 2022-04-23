@@ -4,7 +4,7 @@ main: com.bonkle.whatever.WhMain
 api-version: 1.18
 authors: [ Cak ]
 load: STARTUP
-description: Minecraft Plugin for the Machinery Plugin Jam.
+description: Api for adding whatever!
 commands:
   customitemmenu:
     description: Shows a menu of all custom items with WhateverAPI.
