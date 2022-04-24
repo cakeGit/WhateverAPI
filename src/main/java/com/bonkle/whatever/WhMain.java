@@ -1,5 +1,6 @@
 package com.bonkle.whatever;
 
+import com.bonkle.plugin.PluginMain;
 import com.bonkle.whatever.BlockAPI.CustomBlock;
 import com.bonkle.whatever.BlockAPI.CustomBlockEvents;
 import com.bonkle.whatever.ItemAPI.CustomItemEvents;
@@ -24,6 +25,7 @@ public final class WhMain extends JavaPlugin {
         Register.eventHandler(WhMain.plugin, new CustomBlockEvents());
 
         Commands.init();
+        PluginMain.init(); //Integrated plugin
 
     }
 

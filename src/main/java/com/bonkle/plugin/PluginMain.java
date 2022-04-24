@@ -84,7 +84,7 @@ public class PluginMain {
                     .setRotatableType(RotatableType.DIRECTIONAL);
         };
 
-        new CustomBlock("Camera", ns, mat)
+        new CustomBlock("Camera", ns, Material.CROSSBOW)
                 .loadBlockOptions(genericPropOptions)
                 .setRotationIncrement(30)
                 .setOnInteract((player, location, armourStand) -> {
