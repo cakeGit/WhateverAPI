@@ -47,7 +47,7 @@ public class CustomItem {
      * @return CustomItem or null if not found
      */
     public static CustomItem getCustomItem(ItemStack stack) {
-        Debug.log("Found " + customItems.size() + " custom items");
+        //Debug.log("Found " + customItems.size() + " custom items");
         return customItems.stream().filter(customItem -> stackMatchesCustom(stack, customItem)).findFirst().orElse(null);
     }
 

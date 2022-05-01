@@ -11,14 +11,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.util.EulerAngle;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -26,7 +24,7 @@ import java.util.Objects;
 
 public class CustomBlock {
 
-    private static ArrayList<CustomBlock> customBlocks = new ArrayList<>();
+    protected static ArrayList<CustomBlock> customBlocks = new ArrayList<>();
 
     public static ArrayList<CustomBlock> getCustomBlocks() {
         return customBlocks;
@@ -42,7 +40,7 @@ public class CustomBlock {
             for (ArmorStand as : world.getEntitiesByClass(ArmorStand.class)) {
                 if (as.hasMetadata("customBlock")) {
                     Location asLoc = as.getLocation();
-                    Location blockLoc = asLoc.clone().add(0,1,0);
+                    Location blockLoc = asLoc.clone().add(0, 1, 0);
                     if (blockLoc.getBlock().getType() == Material.BARRIER) {
                         blockLoc.getBlock().setMetadata("customBlock", new FixedMetadataValue(WhMain.plugin, as.getCustomName()));
                     }
@@ -51,24 +49,24 @@ public class CustomBlock {
         }
     }
 
-    private String name;
-    private String namespace;
-    private String id;
+    protected String name;
+    protected String namespace;
+    protected String id;
 
-    private CustomItem linkedItem;
+    protected CustomItem linkedItem;
+    protected CustomItem linkedBlockItem;
 
-    private OnCustomBlockBreak onBreak;
-    private OnCustomBlockInteract onInteract;
-    private OnCustomBlockArmourStandBreak onArmourStandBreak;
+    protected OnCustomBlockBreak onBreak;
+    protected OnCustomBlockInteract onInteract;
+    protected OnCustomBlockArmourStandBreak onArmourStandBreak;
 
-    private double[] offset = new double[] {0,0,0};
-    private double[] defaultOffset = new double[] {0.5,-1 + 1.0/16.0,0.5};
-    private RotatableType rotatableType = RotatableType.NONE;
-    private double rotationIncrement = 90;
+    protected double[] offset = new double[]{0, 0, 0};
+    protected RotatableType rotatableType = RotatableType.NONE;
+    protected double rotationIncrement = 90;
 
-    private boolean solid = true;
-    private boolean drops = true;
-    private boolean rightClickPickUp = false;
+    protected boolean solid = true;
+    protected boolean drops = true;
+    protected boolean rightClickPickUp = false;
 
     public CustomBlock(String name, String namespace) {
         construct(name, namespace, name, Material.GOLD_BLOCK, null);
@@ -112,6 +110,8 @@ public class CustomBlock {
         } else {
             this.linkedItem = new CustomItem(name, namespace, id, linkedItemMaterial);
         }
+        this.linkedBlockItem = new CustomItem(name, namespace, id + "-block");
+
         this.linkedItem.setOnRightClick((event) -> {
             if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 
@@ -119,53 +119,26 @@ public class CustomBlock {
                         .add(event.getBlockFace().getDirection());
                 World world = newBlockLoc.getWorld();
 
+                Debug.log("newBlockLoc: " + newBlockLoc);
+
                 //Summon the armour stand
-                ArmorStand as = (ArmorStand) world.spawnEntity(
+                ItemFrame itemFrame = (ItemFrame) world.spawnEntity(
                         newBlockLoc
-                                .clone().add(defaultOffset[0], defaultOffset[1], defaultOffset[2])
-                                .add(offset[0],offset[1],offset[2]), //Shifted because the block will be 1/16th of a block too low because pivot
-                        EntityType.ARMOR_STAND
+                                .clone()
+                                .add(offset[0], offset[1], offset[2]),
+                        EntityType.ITEM_FRAME
                 );
-                if (rotatableType != RotatableType.NONE) {//Stuff which i did because do a good job naughty boy
-                    if (rotatableType == RotatableType.DIRECTIONAL) {
-                        //Make it face player along x axis, snap to rotationIncrement degree increments based on player direction
-                        as.setHeadPose(new EulerAngle(0, Math.toRadians(Math.round(event.getPlayer().getLocation().getYaw() / rotationIncrement) * rotationIncrement ),
-                                0));
-                    } else if (rotatableType == RotatableType.FULL) {
-                        //Make it face player along x axis AND y axis (based on side of block), snap to rotationIncrement degree increments based on player direction
-                        double z=0;
-                        double x=90;
-                        switch (event.getBlockFace()) {
-                            case UP:
-                            case DOWN:
-                                x = 0;
-                                break;
-                            case NORTH:
-                                z = -90;
-                                break;
-                            case SOUTH:
-                                z = 90;
-                                break;
-                            case EAST:
-                                z = 180;
-                                break;
-                            case WEST:
-                                z = 0;
-                        }
 
-                        as.setHeadPose(new EulerAngle(Math.toRadians(z), Math.toRadians(Math.round(event.getPlayer().getLocation().getYaw() / rotationIncrement) * rotationIncrement ),
-                                Math.toRadians(x)));
-                    }
-                }
+                //Set the item and other details
+                itemFrame.setItem(linkedBlockItem.generateItemStack());
+                itemFrame.setCustomName(getFullId());
 
-                //Set various properties
-                as.setCanMove(false);
-                as.setCustomName(getFullId());
+                //set the orentation to the block face
+                itemFrame.setFacingDirection(event.getBlockFace(), true);
 
                 //Place the block
 
                 if (solid) {
-                    as.setInvulnerable(true);
                     world.getBlockAt(newBlockLoc).setType(Material.BARRIER);
                     world.getBlockAt(newBlockLoc).setMetadata("customBlock", new FixedMetadataValue(WhMain.plugin, getFullId()));
                 }
@@ -175,7 +148,7 @@ public class CustomBlock {
     }
 
     @ApiInternal
-    public boolean onBreak(BlockBreakEvent event, ArmorStand as, boolean forceDisableDrops) { //Recives a potentialy real block break event so it returns if the true event should be cancelled which can be used elsewhere
+    public boolean onBreak(BlockBreakEvent event, Entity brokenEntity, boolean forceDisableDrops) { //Recives a potentialy real block break event so it returns if the true event should be cancelled which can be used elsewhere
         event.setDropItems(false);
         //Drop item at location
         if (drops && !forceDisableDrops) {
@@ -184,24 +157,26 @@ public class CustomBlock {
         event.getBlock().removeMetadata("customBlock", WhMain.plugin);
 
         //Kill armor stand
-        if (as == null) {
-            ArmorStand BlockAs = (ArmorStand) event.getBlock().getWorld().getNearbyEntities(
-                            event.getBlock().getLocation().clone().add(0.5,-1 + 1.0/16.0,0.5),
-                            0.2, 0.2, 0.2
-                    ).stream().filter(entity -> entity instanceof ArmorStand && entity.getLocation().equals(event.getBlock().getLocation().clone().add(0.5,-1 + 1.0/16.0,0.5)))
-                    .findFirst().orElse(null);
+        if (brokenEntity == null) {
+            //Temp Debug
+
+            Entity BlockAs = event.getBlock().getWorld().getNearbyEntities(
+                            event.getBlock().getLocation().clone().add(offset[0]+0.5, offset[1], offset[2]+0.5),
+                    0.2, 0.2, 0.2
+                    ).stream().filter(entity -> entity instanceof ItemFrame).findFirst().orElse(null);
+
             BlockAs.remove();
         } else {
-            as.remove();
+            brokenEntity.remove();
         }
 
         if (onBreak != null) {
             onBreak.run(event);
         }
-        if (onArmourStandBreak != null && as != null) {
+        /*if (onArmourStandBreak != null && brokenEntity != null) {
             Debug.log("Running onArmourStandBreak");
-            onArmourStandBreak.run(event, as);
-        }
+            onArmourStandBreak.run(event, (ArmorStand) brokenEntity);
+        }*/
         return event.isCancelled(); //Return val from onBreak
     }
 
@@ -223,7 +198,8 @@ public class CustomBlock {
                 //Run block break event
                 onBreak(new BlockBreakEvent(location.getBlock(), player), armorStand, true);
             }
-        } catch (NullPointerException ignored) { }
+        } catch (NullPointerException ignored) {
+        }
 
         if (onInteract != null) {
             onInteract.run(player, location, armorStand);
@@ -231,14 +207,9 @@ public class CustomBlock {
     }
 
     @ApiInternal
-    private static void addCustomBlockToList(CustomBlock customBlock) {
+    public static void addCustomBlockToList(CustomBlock customBlock) {
         customBlocks.add(customBlock);
         Debug.log("Added custom block " + customBlock.getFullId() + " length: " + customBlocks.size());
-    }
-
-    public CustomBlock loadBlockOptions(BlockOptionsLambda blockOptionsLambda) {
-        blockOptionsLambda.run(this);
-        return this;
     }
 
     public static CustomBlock getCustomBlock(String customBlock) {
@@ -282,14 +253,7 @@ public class CustomBlock {
     }
 
     public CustomBlock setOffset(double x, double y, double z) {
-        this.offset = new double[]{x,y,z};
-        return this;
-    }
-
-    public CustomBlock setDefaultYOffset(boolean defaultOffset) {
-        if (!defaultOffset) {
-            this.defaultOffset[1] = 0;
-        }
+        this.offset = new double[]{x, y, z};
         return this;
     }
 
@@ -298,9 +262,12 @@ public class CustomBlock {
         return this;
     }
 
-    /**<h2>Sets if the block will drop items when broken</h2>
+    /**
+     * <h2>Sets if the block will drop items when broken</h2>
+     *
      * @param drops If the block drops items when broken
-     */ public CustomBlock setDrops(boolean drops) {
+     */
+    public CustomBlock setDrops(boolean drops) {
         this.drops = drops;
         return this;
     }
@@ -336,6 +303,8 @@ public class CustomBlock {
     }
 
     @Deprecated //Unfinished
-    public ItemStack getDrops() { return linkedItem.generateItemStack(); }
+    public ItemStack getDrops() {
+        return linkedItem.generateItemStack();
+    }
 
 }
