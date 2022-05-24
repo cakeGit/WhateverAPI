@@ -17,6 +17,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -165,8 +166,6 @@ public class CustomBlock {
 
         //Kill armor stand
         if (brokenEntity == null) {
-            //Temp Debug
-
             Entity BlockAs = event.getBlock().getWorld().getNearbyEntities(
                             event.getBlock().getLocation().clone().add(offset[0]+0.5, offset[1], offset[2]+0.5),
                     0.2, 0.2, 0.2
