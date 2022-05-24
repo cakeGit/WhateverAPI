@@ -1,16 +1,14 @@
 package com.bonkle.plugin;
 
-import com.bonkle.whatever.BlockAPI.BlockOptionsLambda;
+import com.bonkle.whatever.BlockAPI.AsBlockOptions;
+import com.bonkle.whatever.BlockAPI.CustomAsBlock;
 import com.bonkle.whatever.BlockAPI.CustomBlock;
 import com.bonkle.whatever.BlockAPI.RotatableType;
 import com.bonkle.whatever.Debug;
 import com.bonkle.whatever.ItemAPI.CustomItem;
 import com.bonkle.whatever.RegisterAPI.Register;
 import com.bonkle.whatever.WhMain;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.Material;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -28,18 +26,19 @@ public class PluginMain {
 
         String ns = "pluginjam";
         Material mat = Material.NETHERITE_BLOCK;
+        Material bimat = Material.BLAZE_POWDER;
 
-        new CustomBlock("Big Truss", ns, mat);
+        new CustomAsBlock("Big Truss", ns, mat);
 
-        new CustomBlock("Small Truss", ns, mat)
+        new CustomAsBlock("Small Truss", ns, mat)
                 .setRotatableType(RotatableType.FULL);
 
-        new CustomBlock("Ribbon", ns, Material.RED_CARPET)
+        new CustomAsBlock("Ribbon", ns, bimat)
                 .setOffset(0, 0.2, 0)
                 .setSolid(false)
                 .setRotatableType(RotatableType.DIRECTIONAL)
                 .setDrops(false)
-                .setOnArmourStandBreak((event, as) -> {
+                .setOnEntityBreak((event, as) -> {
                     Debug.log("Ribbon onBreak");
                     //Get direction of armourstand and spawn redstone particles 2 blocks away in both ways perpendicular to the direction
                     double yaw = as.getHeadPose().getY();
@@ -77,14 +76,14 @@ public class PluginMain {
 
                 });
 
-        BlockOptionsLambda genericPropOptions = (block) -> {
+        AsBlockOptions genericPropOptions = (block) -> {
             block
-                    .setSolid(false)
                     .setDefaultYOffset(false)
+                    .setSolid(false)
                     .setRotatableType(RotatableType.DIRECTIONAL);
         };
 
-        new CustomBlock("Camera", ns, Material.CROSSBOW)
+        new CustomAsBlock("Camera", ns, Material.CROSSBOW)
                 .loadBlockOptions(genericPropOptions)
                 .setRotationIncrement(30)
                 .setOnInteract((player, location, armourStand) -> {
@@ -92,25 +91,23 @@ public class PluginMain {
                     player.sendMessage(ChatColor.AQUA + "You are now operating this camera!" + ChatColor.DARK_GRAY + " (Press LShift to stop)");
                 });
 
-        new CustomBlock("Barrier", ns, Material.BARRIER)
+        new CustomAsBlock("Barrier", ns, Material.BARRIER)
                 .loadBlockOptions(genericPropOptions);
 
-        new CustomBlock("Coek Can", ns, Material.MILK_BUCKET)
-                .loadBlockOptions(genericPropOptions)
-                .setRightClickPickUp(true)
-                .setRotationIncrement(30)
-                .getLinkedItem()
-                .setEatConsume(false);
-
-        new CustomBlock("Pepis Can", ns, Material.MILK_BUCKET)
+        new CustomAsBlock("Coek Can", ns, Material.MILK_BUCKET)
                 .loadBlockOptions(genericPropOptions)
                 .setRightClickPickUp(true)
                 .setRotationIncrement(30);
 
-        new CustomBlock("Studio Seat", ns, Material.BLAZE_POWDER)
+        new CustomAsBlock("Pepis Can", ns, Material.MILK_BUCKET)
+                .loadBlockOptions(genericPropOptions)
+                .setRightClickPickUp(true)
+                .setRotationIncrement(30);
+
+        new CustomAsBlock("Studio Seat", ns, bimat  )
                 .loadBlockOptions(genericPropOptions);
 
-        new CustomBlock("Popcorn", ns, Material.BREAD)
+        new CustomAsBlock("Popcorn", ns, Material.BREAD)
                 .loadBlockOptions(genericPropOptions)
                 .setRightClickPickUp(true)
                 .setRotationIncrement(30);
@@ -119,7 +116,7 @@ public class PluginMain {
                 .setOnGenericLeftClick(event -> {
                     //Set first lore entry to ns+":scissors-closed"
                     ItemMeta meta = event.getItem().getItemMeta();
-                    setFirstLore(meta, ChatColor.DARK_GRAY+ ns+":scissors-closed");
+                    setFirstLore(meta, ChatColor.DARK_GRAY+ns+":scissors-closed");
                     event.getItem().setItemMeta(meta);
                 });
         new CustomItem("Scissors", ns, "scissors-closed")
@@ -127,9 +124,11 @@ public class PluginMain {
                 .setOnRightClick(event -> {
                     //Set first lore entry to ns+":scissors-open"
                     ItemMeta meta = event.getItem().getItemMeta();
-                    setFirstLore(meta, ChatColor.DARK_GRAY+ ns+":scissors-open");
+                    setFirstLore(meta, ChatColor.DARK_GRAY+ns+":scissors-open");
                     event.getItem().setItemMeta(meta);
                 });
+
+        new CustomBlock("Test Block", ns, Material.STONE);
 
         Register.eventHandler(WhMain.plugin, new PluginEvents());
 

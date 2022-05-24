@@ -226,6 +226,39 @@ public class WhItemStack extends ItemStack {
                 .setItemMetaRI(getItemMeta());
     }
 
+
+    /*public WhItemStack setHeadData(String data) {//Some weird stuff which has been painful to make
+
+        //Log elems (debug)
+        HashMap<String, Object> map = (HashMap<String, Object>) this.serialize();
+        for (String key : map.keySet()) {
+            Debug.log(key + ": " + map.get(key));
+        }
+
+        //Set "meta"
+        HashMap<Object, Object> meta = new HashMap<>();
+        meta.put("==", "ItemMeta");
+        meta.put("meta-type", "SKULL");
+
+        HashMap<String, Object> playerProfile = new HashMap<>();
+        playerProfile.put("==", "PlayerProfile");
+        playerProfile.put("uniqueId", "ca681fa8-fb4b-4ac8-af23-e500c8f755eb");
+
+        ArrayList<HashMap<String, String>> properties = new ArrayList<>();
+
+        HashMap<String, String> propertiesHash = new HashMap<>();
+        propertiesHash.put("name", "texture");
+        propertiesHash.put("value", data);
+
+        properties.add(propertiesHash);
+        playerProfile.put("properties", properties);
+        meta.put("skull-owner", playerProfile);
+
+        //Convert the Hashmap back ionto skull meta
+
+        return this;
+    }*/
+
     /**
      * <h2>Returns a copy of the WhItemStack with the same material, MetaData and amount.</h2>
      *

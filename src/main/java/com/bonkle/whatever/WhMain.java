@@ -1,7 +1,7 @@
 package com.bonkle.whatever;
 
 import com.bonkle.plugin.PluginMain;
-import com.bonkle.whatever.BlockAPI.CustomBlock;
+import com.bonkle.whatever.BlockAPI.CustomAsBlock;
 import com.bonkle.whatever.BlockAPI.CustomBlockEvents;
 import com.bonkle.whatever.ItemAPI.CustomItemEvents;
 import com.bonkle.whatever.MenuAPI.InventoryMenuEvents;
@@ -16,9 +16,9 @@ public final class WhMain extends JavaPlugin {
     public void onEnable() {
 
         plugin = this;
-        //Debug.enable(plugin);
+        Debug.enable(plugin);
 
-        CustomBlock.setCustomBlocksMetadata();
+        CustomAsBlock.setCustomBlocksMetadata();
 
         Register.eventHandler(WhMain.plugin, new InventoryMenuEvents());
         Register.eventHandler(WhMain.plugin, new CustomItemEvents());

@@ -59,6 +59,7 @@ public class CustomItemEvents implements Listener {
 
             if (customItem != null) {
                 customItem.onUse(event);
+                event.setCancelled(true);
 
                 if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
                     customItem.onLeftClick(event);

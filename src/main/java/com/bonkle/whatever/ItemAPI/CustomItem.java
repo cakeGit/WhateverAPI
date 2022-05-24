@@ -1,6 +1,5 @@
 package com.bonkle.whatever.ItemAPI;
 
-import com.bonkle.whatever.Debug;
 import com.bonkle.whatever.ItemAPI.CustomItemHandlers.OnCustomItemUse;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -30,12 +29,15 @@ public class CustomItem {
     }
 
     /** <h2>Returns if the ItemStack is an instance of the CustomItem</h2>
+     * Automatically retuns false if the CustomItem, Item or Item lore is null
      *
      * @param stack ItemStack to check
      * @param customItem CustomItem to check against
-     * @return True if the ItemStack is an instance of the CustomItem
+     * @return True if the ItemStack is an instance of the CustomItem, false if not or any of above conditions are true
      */
     public static boolean stackMatchesCustom(ItemStack stack, CustomItem customItem) {
+        if (stack == null || customItem == null) return false;
+        if (stack.getLore() == null) return false;
         return stack.getLore().get(0).equals(customItem.getFormattedFullId());
     }
 
@@ -47,7 +49,7 @@ public class CustomItem {
      * @return CustomItem or null if not found
      */
     public static CustomItem getCustomItem(ItemStack stack) {
-        Debug.log("Found " + customItems.size() + " custom items");
+        //Debug.log("Found " + customItems.size() + " custom items");
         return customItems.stream().filter(customItem -> stackMatchesCustom(stack, customItem)).findFirst().orElse(null);
     }
 
@@ -76,6 +78,10 @@ public class CustomItem {
 
     public CustomItem(String name, String pluginNamespace) {
         this(name, pluginNamespace, name, Material.BLAZE_POWDER);
+    }
+
+    public CustomItem(String name, String pluginNamespace, Material material) {
+        this(name, pluginNamespace, name, material);
     }
 
     public CustomItem(String name, String pluginNamespace, String id) {

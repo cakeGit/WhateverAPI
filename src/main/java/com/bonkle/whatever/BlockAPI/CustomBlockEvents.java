@@ -3,12 +3,14 @@ package com.bonkle.whatever.BlockAPI;
 import com.bonkle.whatever.Debug;
 import org.bukkit.GameMode;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
@@ -21,7 +23,7 @@ public class CustomBlockEvents implements Listener {
         if (event.getEntity() instanceof ArmorStand) {
             ArmorStand armorStand = (ArmorStand) event.getEntity();
             //loop all custom blocks
-            for (CustomBlock cb : CustomBlock.getCustomBlocks()) {
+            for (CustomBlock cb : CustomAsBlock.getCustomBlocks()) {
                 if (armorStand.getCustomName().contains(cb.getFullId()) && cb.isSolid()) {
                     event.setCancelled(true);
                     break;
@@ -47,7 +49,7 @@ public class CustomBlockEvents implements Listener {
         if (event.getEntity() instanceof ArmorStand) {
             ArmorStand armorStand = (ArmorStand) event.getEntity();
 
-            for (CustomBlock cb : CustomBlock.getCustomBlocks()) {
+            for (CustomBlock cb : CustomAsBlock.getCustomBlocks()) {
                 if (armorStand.getCustomName().contains(cb.getFullId())) {
                     event.getDrops().clear();
                     break;
@@ -79,7 +81,7 @@ public class CustomBlockEvents implements Listener {
         if (event.getRightClicked() instanceof ArmorStand) {
             ArmorStand armorStand = (ArmorStand) event.getRightClicked();
 
-            for (CustomBlock cb : CustomBlock.getCustomBlocks()) {
+            for (CustomBlock cb : CustomAsBlock.getCustomBlocks()) {
                 if (armorStand.getCustomName().contains(cb.getFullId()) && !cb.isSolid()) {
                     cb.onInteract(event.getPlayer(), event.getRightClicked().getLocation(), armorStand);
                 }
@@ -88,7 +90,16 @@ public class CustomBlockEvents implements Listener {
     }
 
     @EventHandler
-    public void onPlayerItemConsumeEvent(PlayerItemConsumeEvent event) { //Handles custom block interaction
+    public void onHangingBreakEvent(HangingBreakEvent event) { //Handles item frames breaking
+        if (event.getEntity() instanceof ItemFrame) {
+            ItemFrame itemFrame = (ItemFrame) event.getEntity();
 
+            for (CustomBlock cb : CustomAsBlock.getCustomBlocks()) {
+                if (itemFrame.getCustomName().contains(cb.getFullId())) {
+                    event.setCancelled(true);
+                }
+            }
+        }
     }
+
 }
